@@ -23,6 +23,9 @@ def ShowInFile(question , response) :
     file.write("Gpt : " + str(response))
     FILEIDX += 1
 
+cmd_list = [["tl" , "translate"] , ["exit" , "quite the process"] , 
+            ["cmdls" , "show all commands"]]
+
 while True:
     cmdline = input("Enter your commnad : ")
     cmd = cmdline.split()[0]
@@ -48,7 +51,18 @@ while True:
             for i in op_list : print(i[0] + " : " + i[1])
         elif op == "-ls" : 
             #show the dataList
-            print("")
+            print("this operation implement yet")
         else : 
             print("=====Wrong operation=====")
             for i in op_list : print(i[0] + " : " + i[1])
+    elif cmd == "cmdls" : 
+        print("=====cmd list=====")
+        for cmdlist in cmd_list : print(cmdlist[0] + " : " + cmdlist[1])
+        print("==================")
+    elif cmd == "exit" or cmd == "exit()" : 
+        break
+    else : 
+        print("this cmd implement yet")
+        print("=====cmd list=====")
+        for cmdlist in cmd_list : print(cmdlist[0] + " : " + cmdlist[1])
+        print("==================")
