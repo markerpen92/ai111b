@@ -28,10 +28,10 @@ entropy_loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), LR)
 
 def Ranked(featureValue) : 
-    if featureValue>=5.0 : return 100
+    if featureValue>=5.0 : return 500
     elif featureValue<5.0 and featureValue>-5.0 : 
         return int(featureValue*100)
-    else : return -100
+    else : return -500
 
 def ReadLabels(labels , batchSize) : 
     label = []
