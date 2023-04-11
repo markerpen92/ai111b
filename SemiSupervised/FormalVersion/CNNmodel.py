@@ -4,10 +4,8 @@ import torch.optim as optim
 from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader
 import sys
-#import timm
 
 transform = transforms.Compose([
-    # transforms.RandomResizedCrop(64),
     transforms.RandomResizedCrop(224),
     transforms.RandomRotation(20),
     transforms.RandomHorizontalFlip(p=0.5),
@@ -20,37 +18,22 @@ test_dataset = datasets.ImageFolder("C:\\Users\\user\\Desktop\\alg\\mid\\SVM\\tr
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
 
-# classes = train_dataset.classes
-# classes_index = train_dataset.class_to_idx
-
-# model = models.vgg16(pretrained = True)
 model = models.resnet18(pretrained=True)
-# # print(model)
 
 for param in model.parameters():
     param.requires_grad = False
-
-# model.classifier = torch.nn.Sequential(torch.nn.Linear(25088, 100),
-#                                         torch.nn.ReLU(),
-#                                         torch.nn.Dropout(p=0.5),
-#                                         torch.nn.Linear(100, 2))
-                                    
+                                
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
-
-
-                                            
+                                        
 LR = 0.0003
-
 entropy_loss = nn.CrossEntropyLoss()
-
 optimizer = optim.Adam(model.parameters(), LR)
 
 
 def train():
     model.train()
     for i, data in enumerate(train_loader):
-        # print(i, end=" ")
         inputs, labels = data
         out = model(inputs)
         loss = entropy_loss(out, labels)
@@ -81,7 +64,5 @@ for epoch in range(0, 100):
     print("epoch", epoch)
     train()
     test()
-    # if input("save? (y/n): ") == "y":
-    #     torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
 
 torch.save(model.state_dict(), "./cat_dog100.pth")

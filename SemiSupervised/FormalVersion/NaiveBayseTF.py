@@ -6,7 +6,6 @@ from torch.utils.data import DataLoader
 import sys
 
 transform = transforms.Compose([
-    # transforms.RandomResizedCrop(64),
     transforms.RandomResizedCrop(224),
     transforms.RandomRotation(20),
     transforms.RandomHorizontalFlip(p=0.5),
@@ -19,20 +18,8 @@ test_dataset = datasets.ImageFolder("C:\\Users\\user\\Desktop\\alg\\mid\\SVM\\tr
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
 
-# classes = train_dataset.classes
-# classes_index = train_dataset.class_to_idx
-
 model = models.resnet18(pretrained=True)
-# # print(model)
-
-# for param in model.parameters():
-#     param.requires_grad = False
-
-# model.classifier = torch.nn.Sequential(torch.nn.Linear(25088, 100),
-#                                         torch.nn.ReLU(),
-#                                         torch.nn.Dropout(p=0.5),
-#                                         torch.nn.Linear(100, 2))
-                                    
+                        
 num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
 
@@ -81,13 +68,6 @@ def Ranked(featureValue) : #+-5之間
     elif featureValue<-4.0 and featureValue>=-5.0 : return 35
     else : return 36
 
-    # if featureValue>1.5 or featureValue==1.5 : return 1
-    # elif featureValue<1.5 and featureValue>0.8 or featureValue==0.8 : return 2
-    # elif featureValue<0.8 and featureValue>0 or featureValue==0 : return 3
-    # elif featureValue<0 and featureValue>-0.8 and featureValue==-0.8 : return 4
-    # elif featureValue<-0.8 and featureValue>-1.5 and featureValue==-1.5 : return 5
-    # else : return 6
-
 def ReadLabels(labels , batchSize) : 
     label = []
     for n in labels :
@@ -96,13 +76,9 @@ def ReadLabels(labels , batchSize) :
     return label
 
 def RankedData(out , labels , OutputDataset , batchsize) :
-    #input(out)
     label = ReadLabels(labels , batchsize) 
     outlabel = " "
     for i in range(len(out)) : 
-        # print(out)
-        # print(out[i])
-        # print("===========================")
         if out[i][0] < out[i][1] : outlabel = "dog"
         else : outlabel = "cat"
         catFeature = Ranked(out[i][0].item())
@@ -119,47 +95,25 @@ def NaiveBayse(out , OutputDataset , batchsize , eps) :
         DataFeature.append([catFeature , dogFeature])
     curraset = []
     falset = []
-    #input(OutputDataset)
     for data in OutputDataset :
-        #input(data) 
         if data[2] == "true" : curraset.append([data[0] , data[1]])
         else : falset.append([data[0], data[1]]) 
     idx = 0   
     for features in DataFeature : 
-        # input(DataFeature)
         currasetCatFeatures = falsetCatFeatures = currasetDogFeatures = falsetDogFeatures = 0
-        # input(features)
-        # input(falset)
         for f in falset : 
             if features[0] == f[0] : falsetCatFeatures += 1
             if features[1] == f[1] : falsetDogFeatures += 1
         for c in curraset : 
             if features[0] == c[0] : currasetCatFeatures += 1
             if features[1] == c[1] : currasetDogFeatures += 1
-        # print("Falset : ")
-        # print(falset)
-        # print("Curraset : ")
-        # print(curraset)
-        # print("=======================")
         result = True
         label = "cat"
         if out[idx][1] > out[idx][0] : label = "dog"
-        # input(curraset)
-        # input(currasetDogFeatures)
-        # input(features)
-        # input(falsetCatFeatures)
-        # input(falsetDogFeatures)
         a = (len(falset)/DataAmount)*(falsetCatFeatures/(len(falset)+eps))*(falsetDogFeatures/(len(falset)+eps))
         b = (len(curraset)/DataAmount)*(currasetCatFeatures/(len(curraset)+eps))*(currasetDogFeatures/(len(curraset)+eps))
         curracy = b/(a+b+eps)
         failure = a/(a+b+eps)
-        # input((len(falset)/DataAmount))
-        # input((falsetCatFeatures/(len(falset)+eps)))
-        # input((falsetDogFeatures/(len(falset)+eps)))
-        # print("a : " + str(a))
-        # print("b : " + str(b))
-        # print("curracy : " + str(curracy))
-        # print("failure" + str(failure))
         if curracy < failure : result = False
         if not result : 
             if label == "dog" : out[idx] = torch.tensor([[3.0 , 0.0]] , requires_grad=True)
@@ -171,8 +125,6 @@ def train():
     OutputDataset = []
     idx = 0
     for i, data in enumerate(train_loader):
-        
-        # print(i, end=" ")
         inputs, labels = data
         out = model(inputs)
         if idx <= 35 : RankedData(out , labels , OutputDataset , batchsize=8)
