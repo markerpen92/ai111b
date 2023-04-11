@@ -50,7 +50,7 @@ while True:
             #show operations
             for i in op_list : print(i[0] + " : " + i[1])
         elif op == "-ls" : 
-            #show the dataList
+            #show the fileList
             print("this operation implement yet")
         else : 
             print("=====Wrong operation=====")
