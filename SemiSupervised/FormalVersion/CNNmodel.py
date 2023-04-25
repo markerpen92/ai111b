@@ -12,8 +12,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("C:\\Users\\user\\Desktop\\alg\\mid\\SVM\\train\\train_200\\", transform)
-test_dataset = datasets.ImageFolder("C:\\Users\\user\\Desktop\\alg\\mid\\SVM\\train\\test_100\\", transform)
+train_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\image\\trainingData", transform)
+test_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\testingData", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -27,7 +27,7 @@ num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
                                         
 LR = 0.0003
-entropy_loss = nn.CrossEntropyLoss()
+entropy_loss = nn.MSELoss()
 optimizer = optim.Adam(model.parameters(), LR)
 
 
@@ -36,6 +36,8 @@ def train():
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
+        Labels = [[0.0, 1.0] if l==1 else [1.0, 0.0] for l in labels]
+        labels = torch.Tensor(Labels)
         loss = entropy_loss(out, labels)
         optimizer.zero_grad()
         loss.backward()
