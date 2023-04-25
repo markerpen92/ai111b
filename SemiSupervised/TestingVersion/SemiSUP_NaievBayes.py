@@ -114,7 +114,7 @@ def testingCheck(OutputDataset , outs , eps) :
     for out in outs : 
         failset = []
         accuset = []
-        OutFeature = [Ranked(out[0][0]) , Ranked(out[0][1])]
+        OutFeature = [Ranked(out.items()[0]) , Ranked(out.items[1])]
         for data in OutputDataset : 
             if data[2] == "true" : accuset.append(data[0] , data[1])
             else : failset.append(data[0] , data[1])
