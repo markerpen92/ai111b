@@ -36,8 +36,7 @@ def train():
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
-        Labels = [[0.0, 1.0] if l==1 else [1.0, 0.0] for l in labels]
-        labels = torch.Tensor(Labels)
+        labels = torch.Tensor([[0.0, 1.0] if l==1 else [1.0, 0.0] for l in labels])
         loss = entropy_loss(out, labels)
         optimizer.zero_grad()
         loss.backward()
