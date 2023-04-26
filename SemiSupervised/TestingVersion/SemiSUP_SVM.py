@@ -27,7 +27,7 @@ num_ftrs = model.fc.in_features
 model.fc = nn.Linear(num_ftrs, 2)
                                         
 LR = 0.0003
-hinge = nn.HingeEmbeddingLoss(margin=1.0, size_average=None, reduce=None, reduction='mean')
+hinge = nn.MarginRankingLoss(margin=0.0, size_average=None, reduce=None, reduction='mean')
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4, weight_decay=1e-5)
 
 
@@ -35,12 +35,41 @@ def train():
     model.train()
     for i, data in enumerate(train_loader):
         inputs, labels = data
-        out = model(inputs)
-        labels = torch.Tensor([[0.0, 2.0] if l==1 else [2.0, 0.0] for l in labels])
-        loss = hinge(out, labels)
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+        outs = model(inputs)
+        idx = 0
+        Labels = []
+        for l in labels : 
+            if l == 0 : Labels.append(torch.tensor(-3.0 , requires_grad=True))
+            else : Labels.append(torch.tensor(3.0 , requires_grad=True))
+        for out in outs : 
+            x1 = torch.tensor(out[0].item() , requires_grad=True)
+            x2 = torch.tensor(out[1].item() , requires_grad=True)
+            y = Labels[idx]
+            idx += 1
+            # input(x1)
+            # input(x2)
+            # input(y)
+            loss = hinge(x1 , x2 , y)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+
+        # for l in range(len(labels)) :
+        #     if labels[l]==0 : labels[l] = -1.0
+        #     else : labels[l] = 1.0
+        # x1 = []
+        # x2 = []
+        # y = []
+        # for out in outs : 
+        #     x1.append(out[0])
+        #     x2.append(out[1])
+        # for l in range(len(labels)) : 
+        #     y.append(labels[l])
+        # input(torch.tensor(x1))
+        # input(torch.tensor(x2))
+        # input(y)
+        # input(torch.tensor(y))
+        
 
 def test():
     model.eval()
