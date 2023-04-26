@@ -12,8 +12,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("path", transform)
-test_dataset = datasets.ImageFolder("path", transform)
+train_dataset = datasets.ImageFolder("PATH", transform)
+test_dataset = datasets.ImageFolder("PATH", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
