@@ -8,11 +8,16 @@ class Neuron() :
         for i in range(input) : 
             self.weights.append(Value(rd.uniform(-1 , 1)))
 
-    def __call__(self , input , nonLinear) : 
+    def __call__(self , inputs , nonLinear) : 
         out = Value(0)
-        for i in range(self.weights) : 
-            out += self.weights[i] * input[i]
-        out += self.bias
+        for i in range(len(self.weights)) : 
+            t = self.weights[i] * inputs[i]
+            # print(type(t))
+            # print(self.weights[i] , inputs[i])
+            # print(t.backward)
+            # input()
+            out = out + t
+        out = out + self.bias
         if nonLinear : out.relu()
         return out
     
@@ -52,13 +57,18 @@ class MutiLayersPerceptron :
     def __init__(self , input , output) : 
         structure = [input] + output
         self.layerMap = []
+        self.nonLinear = []
         for l in range(len(structure)-1) : 
             self.layerMap.append(Layer(structure[l] , structure[l+1]))
+            if l==len(structure)-1 : self.nonLinear.append(False)
+            else : self.nonLinear.append(True)
 
     def __call__(self , input) :
         x = input
+        idx = 0
         for L in self.layerMap : 
-            x = L(x)
+            x = L(x , self.nonLinear[idx])
+            idx+=1
         return x
     
     def parameters(self) : 
@@ -67,6 +77,10 @@ class MutiLayersPerceptron :
             for param in layer.parameters() : 
                 _parameters.append(param)
         return _parameters
+    
+    def InitGrade(self) : 
+        for param in self.parameters() : 
+            param.grade = 0
     
     def __repr__(self) : 
         return f"MLP : Layers({self.layerMap})\n"
