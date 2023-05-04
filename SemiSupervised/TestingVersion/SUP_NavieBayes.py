@@ -105,7 +105,7 @@ def NaiveBayes(outs , labels , OutputDataset , batchsize=8 , mode="train") :
                 for memory in memorybuffer : 
                     if DogFeature == memory[0] and CatFeature == memory[1] and memory[2] == "false" : 
                         answer.append(torch.tensor([[CatFeature , DogFeature]] , requires_grad=True))     
-                
+        return answer
 
 def train(OutputDataset):
     model.train()
@@ -128,7 +128,7 @@ def test(OutputDataset):
     for i, data in enumerate(test_loader):
         inputs, labels = data
         out = model(inputs)
-        NaiveBayes(out , labels , OutputDataset , "test")
+        out = NaiveBayes(out , labels , OutputDataset , "test")
         _, predicted = torch.max(out, 1)
         correct += (predicted == labels).sum()
     print(f"Test acc:{(correct.item()/len(test_dataset))*100}%", end="\t\t")
