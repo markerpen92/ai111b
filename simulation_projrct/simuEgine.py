@@ -9,8 +9,18 @@ class Value :
         if not isinstance(other , Value) : other = Value(other)
         out = Value(self.data+other.data , (self , other))
         def backward() : 
+            # print("====+====")
+            # print(out)
+            # print(self)
+            # print(other)
+            # input()
             self.grade += out.grade
             other.grade += out.grade
+            # print("after----------------")
+            # print(out)
+            # print(self)
+            # print(other)
+            # input()
         out.backward = backward
         return out
     
@@ -19,8 +29,18 @@ class Value :
         out = Value(self.data*other.data , (self , other))
         # input(out)
         def backward() : 
+            # print("====*====")
+            # print(out)
+            # print(self)
+            # print(other)
+            # input()
             self.grade += out.grade*other.data
             other.grade += out.grade*self.data
+            # print("after----------------")
+            # print(out)
+            # print(self)
+            # print(other)
+            # input()
         out.backward = backward
         return out
 
@@ -28,7 +48,16 @@ class Value :
         out = Value(self.data , (self,))
         if self.data < 0 : out.data = 0
         def backward() : 
-            self.grade += int(self.data>0)*out.data
+            # print("====relu====")
+            # print(out)
+            # print(self)
+            # input()
+            if self.data > 0 : self.grade = self.grade + 1
+            else : self.grade = self.grade + 0 
+            # print("after----------------")
+            # print(out)
+            # print(self)
+            # input()
         out.backward = backward
         return out
     
@@ -37,16 +66,18 @@ class Value :
         map = []
 
         def order(node) : 
-            if node not in visited : 
+            if node in visited : return
+            else : 
                 visited.add(node)
                 for child in node.children : 
                     order(child)
-                    map.append(node)
+                map.append(node)
         order(self)
+        self.grade = 1
         for node in reversed(map) : 
             # print(node.backward)
             # input(type(node))
             node.backward()
     
-    def __repr__(self) :
+    def __repr__(self) : 
         return f"Value => data({self.data}) | grade({self.grade})\n"
