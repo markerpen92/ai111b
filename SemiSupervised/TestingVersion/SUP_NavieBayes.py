@@ -30,48 +30,6 @@ entropy_loss = nn.CrossEntropyLoss()
 
 optimizer = optim.Adam(model.parameters(), LR)
 
-def Ranked(featureValue) : #+-5之間
-    if featureValue>=5.0 : return 50000
-    elif featureValue<5.0 and featureValue>-5.0 : 
-        return int(featureValue*1000)
-    else : return -50000
-
-def ReadLabels(labels , batchSize) : 
-    label = []
-    for n in labels :
-        if n == 1 : label.append("dog")
-        else : label.append("cat")
-    return label
-
-def RankedData(out , labels , OutputDataset , batchsize) :
-    label = ReadLabels(labels , batchsize) 
-    outlabel = " "
-    for i in range(len(out)) : 
-        if out[i][0] < out[i][1] : outlabel = "dog"
-        else : outlabel = "cat"
-        catFeature = Ranked(out[i][0].item())
-        dogFeature = Ranked(out[i][1].item())
-        if outlabel != label[i] : OutputDataset.append([catFeature , dogFeature , "false"])
-        else : OutputDataset.append([catFeature , dogFeature , "true"])
-
-# def NaiveBayse(out , OutputDataset , labels , batchsize , eps , startbatch , buffersize) : 
-#     if buffersize < startbatch : 
-#         # RankedData(out , labels , OutputDataset , 8)
-#         return 
-#     DataFeature = []
-#     DataAmount = len(OutputDataset) * batchsize
-#     for outs in out :
-#         catFeature = Ranked(outs[0].item())
-#         dogFeature = Ranked(outs[1].item())
-#         DataFeature.append([catFeature , dogFeature])
-#     curraset = []
-#     falset = []
-#     for data in OutputDataset :
-#         if data[2] == "true" : curraset.append([data[0] , data[1]])
-#         else : falset.append([data[0], data[1]]) 
-#     idx = 0   
-#     \
-
 def ConvertFeature(FeatureValue) : 
     if FeatureValue >= 5 : return 5000
     elif FeatureValue < 5 and FeatureValue > -5 : return FeatureValue * 1000 
@@ -87,7 +45,24 @@ def MemoryBufferCreate(outputs , labels , MemoryBuffer) :
     return MemoryBuffer
 
 def NaiveBayes(outputs , MemoryBuffer) : 
+    answers = []
     for output in outputs : 
+        outputFeature = torch.tensor([ConvertFeature(output[0].item()) , ConvertFeature(output[1].item())])
+        TrueAmount = FalseAmount = XBelongstoTrue = XBelongstoFalse = 0
+        for memory in MemoryBuffer : 
+            if memory[2] == True : 
+                TrueAmount += 1
+                if memory[0] == outputFeature[0].item() and memory[1] == outputFeature[1].item() : XBelongstoTrue += 1
+            else :
+                FalseAmount += 1
+                if memory[0] == outputFeature[0].item() and memory[1] == outputFeature[1].item() : XBelongstoFalse += 1
+        Pa = (XBelongstoTrue/(len(TrueAmount)+0.0003)*len(TrueAmount)/len(MemoryBuffer))
+        Pb = (XBelongstoFalse/(len(FalseAmount)+0.0003)*len(FalseAmount)/len(MemoryBuffer))
+        PofTrue = Pa/(Pa+Pb+0.0003)
+        PofFalse = Pb/(Pa+Pb+0.0003)
+        if PofTrue < PofFalse : answers.append([output[1].item() , output[0].item()])
+        else : answers.append(output)
+    return answers
         
 
 def train(MemoryBuffer):
@@ -105,13 +80,13 @@ def train(MemoryBuffer):
         out = model(inputs)
         MemoryBuffer = MemoryBufferCreate(out , labels , MemoryBuffer)
 
-def test(OutputDataset):
+def test(MemoryBuffer):
     model.eval()
     correct = 0
     for i, data in enumerate(test_loader):
         inputs, labels = data
         out = model(inputs)
-        out = NaiveBayes(out , labels , OutputDataset , "test")
+        out = NaiveBayes(out , MemoryBuffer)
         _, predicted = torch.max(out, 1)
         correct += (predicted == labels).sum()
     print(f"Test acc:{(correct.item()/len(test_dataset))*100}%", end="\t\t")
@@ -126,10 +101,10 @@ def test(OutputDataset):
 
 
 for epoch in range(0, 100):
-    MemotyBuffer = []
+    MemoryBuffer = []
     print("epoch", epoch)
-    train(MemotyBuffer)
-    test(MemotyBuffer)
+    train(MemoryBuffer)
+    test(MemoryBuffer)
     if (epoch+1)%10 == 0:
         if aa := input("save? (y/n): ") == "y":
             torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
