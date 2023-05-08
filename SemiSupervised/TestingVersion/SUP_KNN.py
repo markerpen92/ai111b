@@ -13,8 +13,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("apth", transform)
-test_dataset = datasets.ImageFolder("path", transform)
+train_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\trainingData", transform)
+test_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\testingData", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -55,10 +55,11 @@ def KNearistNeighbor(K , MemoryBuffer , outputs) :
     answers = []
     for output in outputs : 
         neighbor = []
+        OutputFeature = torch.tensor([ConvertFeature(output[0].item()) , ConvertFeature(output[1].item())] , requires_grad=True)
         for i in range(K) : neighbor.append(MemoryBuffer[i])
         for i in range(len(MemoryBuffer)-K) : 
             for j in range(K) : 
-                if RBFunction(output , neighbor[j]) < RBFunction(output , MemoryBuffer[i]) : 
+                if RBFunction(OutputFeature , neighbor[j]) < RBFunction(OutputFeature , MemoryBuffer[i]) : 
                     MemoryBuffer[i] = neighbor[j]
                     break
         FalseCount = 0

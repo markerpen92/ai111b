@@ -70,47 +70,28 @@ def RankedData(out , labels , OutputDataset , batchsize) :
 #         if data[2] == "true" : curraset.append([data[0] , data[1]])
 #         else : falset.append([data[0], data[1]]) 
 #     idx = 0   
-#     for features in DataFeature : 
-#         currasetCatFeatures = falsetCatFeatures = currasetDogFeatures = falsetDogFeatures = 0
-#         for f in falset : 
-#             if features[0] == f[0] : falsetCatFeatures += 1
-#             if features[1] == f[1] : falsetDogFeatures += 1
-#         for c in curraset : 
-#             if features[0] == c[0] : currasetCatFeatures += 1
-#             if features[1] == c[1] : currasetDogFeatures += 1
-#         result = True
-#         label = "cat"
-#         if out[idx][1] > out[idx][0] : label = "dog"
-#         a = (len(falset)/DataAmount)*(falsetCatFeatures/(len(falset)+eps))*(falsetDogFeatures/(len(falset)+eps))
-#         b = (len(curraset)/DataAmount)*(currasetCatFeatures/(len(curraset)+eps))*(currasetDogFeatures/(len(curraset)+eps))
-#         curracy = b/(a+b+eps)
-#         failure = a/(a+b+eps)
-#         if curracy < failure : result = False
-#         if not result : 
-#             if label == "dog" : out[idx] = torch.tensor([[3.0 , 0.0]] , requires_grad=True)
-#             else : out[idx] = torch.tensor([[0.0 , 3.0]] , requires_grad=True)
-#         idx += 1
-#     RankedData(out , labels , OutputDataset , 8)
+#     \
 
-def NaiveBayes(outs , labels , OutputDataset , batchsize=8 , mode="train") : 
-    if mode=="train" : 
-        OutputDataset = RankedData(outs , labels , OutputDataset , batchsize)
-        return OutputDataset
-    elif mode=="test" : 
-        answer = []
-        for out in outs : 
-            DogFeature = Ranked(out[0][0].items())
-            CatFeature = Ranked(out[0][1].items())
-            for memorybuffer in OutputDataset : 
-                for memory in memorybuffer : 
-                    if DogFeature == memory[0] and CatFeature == memory[1] and memory[2] == "false" : 
-                        answer.append(torch.tensor([[CatFeature , DogFeature]] , requires_grad=True))     
-        return answer
+def ConvertFeature(FeatureValue) : 
+    if FeatureValue >= 5 : return 5000
+    elif FeatureValue < 5 and FeatureValue > -5 : return FeatureValue * 1000 
+    elif FeatureValue <= -5 : return -5000
 
-def train(OutputDataset):
+def MemoryBufferCreate(outputs , labels , MemoryBuffer) : 
+    for output , label in zip(outputs , labels) : 
+        DogFeature = ConvertFeature(output[0])
+        CatFeature = ConvertFeature(output[1])
+        OutputIsAccurate= True
+        if output[0] > output[1] and label.item() != 1 or output[1] > output[0] and label.item() != 0 : OutputIsAccurate = False
+        MemoryBuffer.append([DogFeature , CatFeature , OutputIsAccurate])
+    return MemoryBuffer
+
+def NaiveBayes(outputs , MemoryBuffer) : 
+    for output in outputs : 
+        
+
+def train(MemoryBuffer):
     model.train()
-    OutputDataset = []
-    idx = 0
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
@@ -119,8 +100,10 @@ def train(OutputDataset):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-        if idx == len(train_loader)-2 : OutputDataset = NaiveBayes(out , labels , OutputDataset)
-        idx += 1
+    for i , data in enumerate(train_loader) : 
+        inputs , labels = data
+        out = model(inputs)
+        MemoryBuffer = MemoryBufferCreate(out , labels , MemoryBuffer)
 
 def test(OutputDataset):
     model.eval()
@@ -143,10 +126,10 @@ def test(OutputDataset):
 
 
 for epoch in range(0, 100):
-    OutputDataset = []
+    MemotyBuffer = []
     print("epoch", epoch)
-    train(OutputDataset)
-    test(OutputDataset)
+    train(MemotyBuffer)
+    test(MemotyBuffer)
     if (epoch+1)%10 == 0:
         if aa := input("save? (y/n): ") == "y":
             torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
