@@ -12,8 +12,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("path", transform)
-test_dataset = datasets.ImageFolder("path", transform)
+train_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\trainingData", transform)
+test_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\testingData", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -56,8 +56,8 @@ def NaiveBayes(outputs , MemoryBuffer) :
             else :
                 FalseAmount += 1
                 if memory[0] == outputFeature[0].item() and memory[1] == outputFeature[1].item() : XBelongstoFalse += 1
-        Pa = (XBelongstoTrue/(len(TrueAmount)+0.0003)*len(TrueAmount)/len(MemoryBuffer))
-        Pb = (XBelongstoFalse/(len(FalseAmount)+0.0003)*len(FalseAmount)/len(MemoryBuffer))
+        Pa = (XBelongstoTrue/TrueAmount+0.0003)*(TrueAmount/len(MemoryBuffer))
+        Pb = (XBelongstoFalse/FalseAmount+0.0003)*(FalseAmount/len(MemoryBuffer))
         PofTrue = Pa/(Pa+Pb+0.0003)
         PofFalse = Pb/(Pa+Pb+0.0003)
         if PofTrue < PofFalse : answers.append([output[1].item() , output[0].item()])
