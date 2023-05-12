@@ -61,7 +61,7 @@ def NaiveBayes(outputs , MemoryBuffer) :
         PofTrue = Pa/(Pa+Pb+0.0003)
         PofFalse = Pb/(Pa+Pb+0.0003)
         if PofTrue < PofFalse : answers.append([output[1].item() , output[0].item()])
-        else : answers.append(output)
+        else : answers.append([output[0].item() , output[1].item()])
     return torch.tensor(answers)
         
 
