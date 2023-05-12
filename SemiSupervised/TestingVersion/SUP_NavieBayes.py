@@ -12,8 +12,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("path", transform)
-test_dataset = datasets.ImageFolder("path", transform)
+train_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\trainingData", transform)
+test_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\testingData", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -40,12 +40,13 @@ def MemoryBufferCreate(outputs , labels , MemoryBuffer) :
         DogFeature = ConvertFeature(output[0])
         CatFeature = ConvertFeature(output[1])
         OutputIsAccurate= True
-        if output[0] > output[1] and label.item() != 1 or output[1] > output[0] and label.item() != 0 : OutputIsAccurate = False
+        if output[0] > output[1] and label.item() != 0 or output[1] > output[0] and label.item() != 1 : OutputIsAccurate = False
         MemoryBuffer.append([DogFeature , CatFeature , OutputIsAccurate])
     return MemoryBuffer
 
 def NaiveBayes(outputs , MemoryBuffer) : 
     answers = []
+    input(MemoryBuffer)
     for output in outputs : 
         outputFeature = torch.tensor([ConvertFeature(output[0].item()) , ConvertFeature(output[1].item())])
         TrueAmount = FalseAmount = XBelongstoTrue = XBelongstoFalse = 0
