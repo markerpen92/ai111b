@@ -99,12 +99,16 @@ def test(MemoryBuffer):
         correct += (predicted == labels).sum()
     print(f"Train acc:{(correct.item()/len(train_dataset))*100}%")
 
-
+import datetime
 for epoch in range(0, 100):
+    start=datetime.datetime.now()
     MemoryBuffer = []
     print("epoch", epoch)
     train(MemoryBuffer)
     test(MemoryBuffer)
+    end  =datetime.datetime.now()
+    diff = end - start
+    print(diff.microseconds) # 單位微秒
     if (epoch+1)%10 == 0:
         if aa := input("save? (y/n): ") == "y":
             torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
