@@ -71,13 +71,14 @@ def KNearistNeighbor(K , MemoryBuffer , outputs) :
         else : answers.append(output)
     return torch.tensor(answers , requires_grad=True)
 
-def train(MemoryBuffer):
+def train(MemoryBuffer , LossBuffer):
     model.train()
     epoch = 0
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
         loss = entropy_loss(out, labels)
+        LossBuffer.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -107,10 +108,19 @@ def test(MemoryBuffer):
     print(f"Train acc:{(correct.item()/len(train_dataset))*100}%")
 
 
+import datetime
 for epoch in range(0, 100):
+    start=datetime.datetime.now()
     MemoryBuffer = []
+    LossBuffer = []
     print("epoch", epoch)
-    train(MemoryBuffer)
+    train(MemoryBuffer , LossBuffer)
     test(MemoryBuffer)
+    end  =datetime.datetime.now()
+    diff = end - start
+    print(f"time cost : {diff.microseconds}") # 單位微秒
+    print("loss value : ")
+    for lossvalue in LossBuffer : 
+        print(lossvalue)
 
 torch.save(model.state_dict(), "./cat_dog100.pth")

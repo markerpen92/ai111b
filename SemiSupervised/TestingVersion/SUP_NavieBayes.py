@@ -63,15 +63,16 @@ def NaiveBayes(outputs , MemoryBuffer) :
         if PofTrue < PofFalse : answers.append([output[1].item() , output[0].item()])
         else : answers.append([output[0].item() , output[1].item()])
     return torch.tensor(answers)
-        
 
-def train(MemoryBuffer):
+
+def train(MemoryBuffer , LossBuffer):
     model.train()
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
         # NaiveBayse(out , OutputDataset , labels , 8 , 0.003 , 35 , idx)
         loss = entropy_loss(out, labels)
+        LossBuffer.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -103,12 +104,16 @@ import datetime
 for epoch in range(0, 100):
     start=datetime.datetime.now()
     MemoryBuffer = []
+    LossBuffer = []
     print("epoch", epoch)
-    train(MemoryBuffer)
+    train(MemoryBuffer , LossBuffer)
     test(MemoryBuffer)
     end  =datetime.datetime.now()
     diff = end - start
-    print(diff.microseconds) # 單位微秒
+    print(f"time cost : {diff.microseconds}") # 單位微秒
+    print("loss value : ")
+    for lossvalue in LossBuffer : 
+        print(lossvalue)
     if (epoch+1)%10 == 0:
         if aa := input("save? (y/n): ") == "y":
             torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
