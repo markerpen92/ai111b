@@ -99,13 +99,13 @@ def train():
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
-        NaiveBayse(out , OutputDataset , labels , 8 , 0.003 , 35 , idx)
-            
+        # NaiveBayse(out , OutputDataset , labels , 8 , 0.003 , 35 , idx)
         idx += 1
         loss = entropy_loss(out, labels)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        NaiveBayse(out , OutputDataset , labels , 8 , 0.003 , 35 , idx)
 
 def test():
     model.eval()

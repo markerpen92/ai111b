@@ -31,12 +31,13 @@ entropy_loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), LR)
 
 
-def train():
+def train(LossBuffer):
     model.train()
     for i, data in enumerate(train_loader):
         inputs, labels = data
         out = model(inputs)
         loss = entropy_loss(out, labels)
+        LossBuffer.append(loss.item())
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -60,9 +61,18 @@ def test():
     print(f"Train acc:{(correct.item()/len(train_dataset))*100}%")
 
 
+import datetime
 for epoch in range(0, 100):
+    start=datetime.datetime.now()
+    LossBuffer = []
     print("epoch", epoch)
-    train()
+    train(LossBuffer)
     test()
+    end  =datetime.datetime.now()
+    diff = end - start
+    print(f"time cost : {diff.microseconds}") # 單位微秒
+    print("loss value : ")
+    for lossvalue in LossBuffer : 
+        print(lossvalue)
 
 torch.save(model.state_dict(), "./cat_dog100.pth")
