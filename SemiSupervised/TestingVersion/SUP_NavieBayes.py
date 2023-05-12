@@ -46,7 +46,6 @@ def MemoryBufferCreate(outputs , labels , MemoryBuffer) :
 
 def NaiveBayes(outputs , MemoryBuffer) : 
     answers = []
-    input(MemoryBuffer)
     for output in outputs : 
         outputFeature = torch.tensor([ConvertFeature(output[0].item()) , ConvertFeature(output[1].item())])
         TrueAmount = FalseAmount = XBelongstoTrue = XBelongstoFalse = 0
