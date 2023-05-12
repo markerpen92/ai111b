@@ -62,7 +62,7 @@ def NaiveBayes(outputs , MemoryBuffer) :
         PofFalse = Pb/(Pa+Pb+0.0003)
         if PofTrue < PofFalse : answers.append([output[1].item() , output[0].item()])
         else : answers.append(output)
-    return answers
+    return torch.tensor(answers)
         
 
 def train(MemoryBuffer):
@@ -86,7 +86,9 @@ def test(MemoryBuffer):
     for i, data in enumerate(test_loader):
         inputs, labels = data
         out = model(inputs)
+        print(out , end='=======================\n')
         out = NaiveBayes(out , MemoryBuffer)
+        input(out)
         _, predicted = torch.max(out, 1)
         correct += (predicted == labels).sum()
     print(f"Test acc:{(correct.item()/len(test_dataset))*100}%", end="\t\t")
