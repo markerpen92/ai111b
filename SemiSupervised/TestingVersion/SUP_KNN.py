@@ -13,8 +13,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\trainingData", transform)
-test_dataset = datasets.ImageFolder("D:\\金大主選修集合\\演算法\\image\\testingData", transform)
+train_dataset = datasets.ImageFolder("path", transform)
+test_dataset = datasets.ImageFolder("path", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -110,17 +110,18 @@ def test(MemoryBuffer):
 
 import datetime
 for epoch in range(0, 100):
-    start=datetime.datetime.now()
     MemoryBuffer = []
     LossBuffer = []
     print("epoch", epoch)
+    start=datetime.datetime.now()
     train(MemoryBuffer , LossBuffer)
     test(MemoryBuffer)
     end  =datetime.datetime.now()
     diff = end - start
-    print(f"time cost : {diff.microseconds}") # 單位微秒
+    print(f"======epoch{epoch}======\ntime cost : {diff.microseconds}\n") # 單位微秒
     print("loss value : ")
     for lossvalue in LossBuffer : 
         print(lossvalue)
+    print("==================\n")
 
 torch.save(model.state_dict(), "./cat_dog100.pth")

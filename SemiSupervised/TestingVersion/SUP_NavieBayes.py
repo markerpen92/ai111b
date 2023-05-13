@@ -31,9 +31,9 @@ entropy_loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), LR)
 
 def ConvertFeature(FeatureValue) : 
-    if FeatureValue >= 5 : return 5000
-    elif FeatureValue < 5 and FeatureValue > -5 : return FeatureValue * 1000 
-    elif FeatureValue <= -5 : return -5000
+    if FeatureValue >= 7 : return 7000
+    elif FeatureValue < 7 and FeatureValue > -7 : return int(FeatureValue * 1000) 
+    elif FeatureValue <= -7 : return -7000
 
 def MemoryBufferCreate(outputs , labels , MemoryBuffer) : 
     for output , label in zip(outputs , labels) : 
@@ -102,22 +102,19 @@ def test(MemoryBuffer):
 
 import datetime
 for epoch in range(0, 100):
-    start=datetime.datetime.now()
     MemoryBuffer = []
     LossBuffer = []
     print("epoch", epoch)
+    start=datetime.datetime.now()
     train(MemoryBuffer , LossBuffer)
     test(MemoryBuffer)
     end  =datetime.datetime.now()
     diff = end - start
-    print(f"time cost : {diff.microseconds}") # 單位微秒
+    print(f"======epoch{epoch}======\ntime cost : {diff.microseconds}\n") # 單位微秒
     print("loss value : ")
     for lossvalue in LossBuffer : 
         print(lossvalue)
-    if (epoch+1)%10 == 0:
-        if aa := input("save? (y/n): ") == "y":
-            torch.save(model.state_dict(), f"./cat_dog{epoch}.pth")
-        if aa == "123": break
+    print("==================\n")
         
 
 torch.save(model.state_dict(), "./cat_dog.pth")
