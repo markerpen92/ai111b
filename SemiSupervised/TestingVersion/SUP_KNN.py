@@ -32,9 +32,9 @@ entropy_loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), LR)
 
 def ConvertFeature(feature) : 
-    if feature >= 5 : return 5000
-    elif feature < 5 and feature > -5 : return feature*1000
-    elif feature <= -5 : return -5000
+    if feature >= 7 : return 7000
+    elif feature < 7 and feature > -7 : return int(feature*1000)
+    elif feature <= -7 : return -7000
 
 def CreateMemoryBuffer(MemoryBuffer , outputs , labels) : 
     for output , label in zip(outputs , labels) : 
@@ -67,7 +67,7 @@ def KNearistNeighbor(K , MemoryBuffer , outputs) :
             if i[2] == False : FalseCount += 1
             else : TrueCount += 1
         if FalseCount > TrueCount : 
-            answers.append([output[0].item(), output[1].item()])
+            answers.append([output[1].item(), output[0].item()])
         else : answers.append(output)
     return torch.tensor(answers , requires_grad=True)
 
