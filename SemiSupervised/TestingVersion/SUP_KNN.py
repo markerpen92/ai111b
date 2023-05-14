@@ -13,8 +13,8 @@ transform = transforms.Compose([
     transforms.ToTensor()
 ])
 
-train_dataset = datasets.ImageFolder("path", transform)
-test_dataset = datasets.ImageFolder("path", transform)
+train_dataset = datasets.ImageFolder("D:\\NQU\\Algrithm\\image\\trainingData", transform)
+test_dataset = datasets.ImageFolder("D:\\NQU\\Algrithm\\image\\testingData", transform)
 
 train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=8, shuffle=True)
@@ -41,7 +41,7 @@ def CreateMemoryBuffer(MemoryBuffer , outputs , labels) :
         DogFeature = ConvertFeature(output[0].item())
         CatFeature = ConvertFeature(output[1].item())
         OutputIsAccurate = True
-        if DogFeature > CatFeature and label.item() != 1 or CatFeature > DogFeature and label.item() != 0 : OutputIsAccurate=False
+        if DogFeature > CatFeature and label.item() != 0 or CatFeature > DogFeature and label.item() != 1 : OutputIsAccurate=False
         MemoryBuffer.append([DogFeature , CatFeature , OutputIsAccurate])
     return MemoryBuffer
 
@@ -68,7 +68,7 @@ def KNearistNeighbor(K , MemoryBuffer , outputs) :
             else : TrueCount += 1
         if FalseCount > TrueCount : 
             answers.append([output[1].item(), output[0].item()])
-        else : answers.append(output)
+        else : answers.append([output[0].item(), output[1].item()])
     return torch.tensor(answers , requires_grad=True)
 
 def train(MemoryBuffer , LossBuffer):
