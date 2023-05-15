@@ -99,7 +99,6 @@ def KNearistNeighbor(K , MemoryBuffer , outputs) :
             else : TrueCount += 1
         if FalseCount > TrueCount : 
             answers.append([output[1].item(), output[0].item()])
-            print("changed")
         else : answers.append([output[0].item(), output[1].item()])
     return torch.tensor(answers , requires_grad=True)
 
