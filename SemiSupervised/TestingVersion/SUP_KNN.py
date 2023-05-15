@@ -127,13 +127,13 @@ def test(MemoryBuffer):
     for i, data in enumerate(test_loader):
         inputs, labels = data
         out = model(inputs)
-        knn_out = KNearistNeighbor(K , MemoryBuffer , out)
+        out = KNearistNeighbor(K , MemoryBuffer , out)
         _, predicted = torch.max(out, 1)
         correct += (predicted == labels).sum()
-        _, predicted = torch.max(knn_out, 1)
-        knn_correct += (predicted == labels).sum()
+        # _, predicted = torch.max(knn_out, 1)
+        # knn_correct += (predicted == labels).sum()
     print(f"Test acc:{(correct.item()/len(test_dataset))*100}%", end="\t\t")
-    print(f"KNN Test acc:{(knn_correct.item()/len(test_dataset))*100}%", end="\t\t")
+    # print(f"KNN Test acc:{(knn_correct.item()/len(test_dataset))*100}%", end="\t\t")
 
     correct = 0
     for i, data in enumerate(train_loader):
