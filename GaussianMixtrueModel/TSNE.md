@@ -13,8 +13,8 @@
 
 ##### 我自己寫的TSNE結果
 
-![](https://drive.google.com/file/d/1yJt_WWFQI1c3mBuOg8i8Jto5UhYxYdjE/view?usp=share_link)
+![](https://lh3.googleusercontent.com/drive-viewer/AFGJ81o6X9rASGpH5JMP7c_iXSRSzR-W6d3H-Q_8H4do1KFO6HEUY_od00S2UN067yM0L1F7-MZDgDb_ZsSP8dKgMcXhRewi6Q=w1920-h902)
 
 ##### 別人寫的TSNE結果
 
-![](https://drive.google.com/file/d/1nHwP_-nmOSerufLyF3WKtI1x1K_M-GrA/view?usp=share_link)
+![](https://lh3.googleusercontent.com/drive-viewer/AFGJ81oF8PlVifwzVweitpTQAF8a2zMh5Py3Z2kaETcp_6DEqe-96rby-WSxrqw1TQIc-_xDBy2M5ts2aoQCTtl3fhZKb9_I=w1920-h902)
