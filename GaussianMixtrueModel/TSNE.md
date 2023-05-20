@@ -13,8 +13,8 @@
 
 ##### 我自己寫的TSNE結果
 
-![](https://hackmd.io/_uploads/Sk58P_UHh.jpg)
+![](https://drive.google.com/file/d/1yJt_WWFQI1c3mBuOg8i8Jto5UhYxYdjE/view?usp=share_link)
 
 ##### 別人寫的TSNE結果
 
-![](https://hackmd.io/_uploads/B1ZPP_Ir2.jpg)
+![](https://drive.google.com/file/d/1nHwP_-nmOSerufLyF3WKtI1x1K_M-GrA/view?usp=share_link)
